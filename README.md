@@ -1,1 +1,1 @@
-# mechoo
+# mechoo : Suggestion Program for people who have difficulty in choosing a menu
