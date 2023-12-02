@@ -5,8 +5,10 @@ from sqlalchemy.orm import sessionmaker
 
 settings.SQLALCHEMY_DATABASE_URI = settings.set_db_url()
 
-engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
+engine = create_engine(
+    settings.SQLALCHEMY_DATABASE_URI   
+    )
 
-SessionLocal = sessionmaker(bind=engine, autoflush=False)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 Base = declarative_base()
