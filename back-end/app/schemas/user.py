@@ -5,12 +5,8 @@ from pydantic import BaseModel
 class UserBase(BaseModel):
     email: str
     username: str
-    is_active: bool = True
-    created_at: datetime = datetime.now()
 
 class UserCreate(UserBase):
-    email: str
-    username: str
     password: str
 
 class UserUpdate(UserBase):
@@ -18,6 +14,8 @@ class UserUpdate(UserBase):
 
 class User(UserBase):
     id: int
+    email: str
+    username: str
 
     class Config:
         orm_mode = True
