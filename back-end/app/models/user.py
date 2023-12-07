@@ -2,7 +2,7 @@ from typing import Union
 from datetime import datetime
 
 from pydantic import BaseModel
-from sqlalchemy import Boolean, Column, Date, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped ,relationship, mapped_column
 
 class Base(DeclarativeBase):
@@ -16,7 +16,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(64), nullable=False)
     password: Mapped[str] = mapped_column(String, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    created_at: Mapped[datetime] = mapped_column(Date, nullable=False, default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now())
     user_detail: Mapped["UserDetail"] = relationship("UserDetail", back_populates="user", cascade="all, delete-orphan")
 
 class UserDetail(Base):
@@ -27,6 +27,6 @@ class UserDetail(Base):
     profile_intro: Mapped[str] = mapped_column(String, nullable=True)
     phone_number: Mapped[str] = mapped_column(String(13), nullable=True)
     gender: Mapped[bool] = mapped_column(Boolean, nullable=True)
-    birth: Mapped[datetime] = mapped_column(Date, nullable=True)
+    birth: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"), nullable=False, index=True)
     user: Mapped["User"] = relationship("User", back_populates="user_detail")

@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # A Week : 60 minutes * 24 hours * 7 days
     ACCESS_TOKEN_EXPIRE_TIME: int = 60 * 24 * 7
-    # SERVER_NAME: str
+    # SERVER_NAME: str = "Mechoo"
     # SERVER_HOST: AnyHttpUrl
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     
