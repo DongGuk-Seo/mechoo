@@ -12,7 +12,7 @@ class UserCreate(UserBase):
 class UserUpdate(UserBase):
     password: Optional[str] = None
 
-class User(UserBase):
+class UserOutput(UserBase):
     username: str
     id: int
 

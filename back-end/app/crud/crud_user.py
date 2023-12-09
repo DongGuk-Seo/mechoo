@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from core.security import get_password_hash, verify_password
 from crud.base import CRUDBase
 from models.user import User
@@ -10,6 +11,14 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_user_by_email(self, db: Session, *, email: str) -> Optional[User]:
         return db.query(User).filter(User.email == email).first()
     
+    def valid_exist_user(self, db: Session, *, email: str, username: str) -> None:
+        is_existed =  bool(db.query(User).filter(User.email == email, User.username == username).first())
+        if is_existed:
+            raise HTTPException(
+            status_code=400,
+            detail="존재하는 유저 입니다."
+        )
+
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
         db_obj = User(
             email=obj_in.email,

@@ -1,25 +1,22 @@
 from typing import Any, Optional
+from datetime import timedelta
 
-import crud
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from sqlmodel import select
+
+import crud
 from api.deps import SessionDep
-from core.security import get_password_hash
-from schemas.user import UserCreate, User, UserSignin
+from core.security import create_token
+from schemas.user import UserCreate, UserOutput, UserSignin
 
 router = APIRouter()
 
-@router.post("/create")
-def create_user(*, session: SessionDep, user_in: UserCreate) -> User:
-    user = crud.get_user_by_email(session=session, email=user_in.email)
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="존재하는 유저 입니다."
-        )
-    user = crud.create_user(session=session, user_create=user_in)
-    res = User(
+@router.post("/signup")
+def create_user(*, session: SessionDep, user_in: UserCreate) -> UserOutput:
+    user = crud.user.valid_exist_user(db=session, email=user_in.email, username=user_in.username)
+    user = crud.user.create(db=session, obj_in=user_in)
+    res = UserOutput(
         id=user.id,
         email=user.email,
         username=user.username,
@@ -27,9 +24,9 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> User:
     return res
 
 @router.post("/signin")
-def signin(*, session: SessionDep, user_in:UserSignin) -> Any:
+def signin(*, session: SessionDep, user_in:UserSignin) -> Optional[str]:
     user = crud.user.authenticate(db=session, email=user_in.email, password=user_in.password)
     if user:
-        return user.email
+        access_token = create_token(user.email)
     else:
-        return "no"
+        return None
