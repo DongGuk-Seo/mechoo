@@ -11,19 +11,28 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_user_by_email(self, db: Session, *, email: str) -> Optional[User]:
         return db.query(User).filter(User.email == email).first()
     
+    def get_user_by_username(self, db: Session, *, username: str) -> Optional[User]:
+        return db.query(User).filter(User.username == username).first()
+    
     def valid_exist_user(self, db: Session, *, email: str, username: str) -> None:
-        is_existed =  bool(db.query(User).filter(User.email == email, User.username == username).first())
-        if is_existed:
+        is_email_exist =  db.query(User).filter(User.email == email).first()
+        is_username_exist =  db.query(User).filter(User.username == username).first()
+        if is_email_exist:
             raise HTTPException(
             status_code=400,
-            detail="존재하는 유저 입니다."
+            detail="이미 존재하는 이메일입니다."
+        )
+        if is_username_exist:
+            raise HTTPException(
+            status_code=400,
+            detail="이미 존재하는 유저 이름입니다."
         )
 
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
         db_obj = User(
             email=obj_in.email,
             username=obj_in.username,
-            hashed_password=get_password_hash(obj_in.password),
+            password=get_password_hash(obj_in.password),
         )
         db.add(db_obj)
         db.commit()

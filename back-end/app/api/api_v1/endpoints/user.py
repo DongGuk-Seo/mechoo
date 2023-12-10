@@ -8,7 +8,8 @@ from sqlmodel import select
 import crud
 from api.deps import SessionDep
 from core.security import create_token
-from schemas.user import UserCreate, UserOutput, UserSignin
+from schemas.user import UserCreate, UserOutput, UserSignin, UserBase, UsernameBase
+from schemas.token import TokenOutput
 
 router = APIRouter()
 
@@ -24,9 +25,20 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> UserOutput:
     return res
 
 @router.post("/signin")
-def signin(*, session: SessionDep, user_in:UserSignin) -> Optional[str]:
+def signin(*, session: SessionDep, user_in:UserSignin) -> Optional[TokenOutput]:
     user = crud.user.authenticate(db=session, email=user_in.email, password=user_in.password)
     if user:
-        access_token = create_token(user.email)
+        tokens = create_token(user.email)
+        return tokens
     else:
         return None
+
+@router.post("/exist/email")
+def check_exist_email(*, session: SessionDep, user_in: UserBase) -> bool:
+    user = crud.user.get_user_by_email(db=session, email=user_in.email)
+    return bool(user)
+
+@router.post("/exist/username")
+def check_exist_username(*, session: SessionDep, user_in: UsernameBase) -> bool:
+    user = crud.user.get_user_by_username(db=session, username=user_in.username)
+    return bool(user)

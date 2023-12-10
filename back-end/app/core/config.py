@@ -4,10 +4,10 @@ from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, v
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
-    # Will be changed
     SECRET_KEY: str = secrets.token_urlsafe(32)
-    # A Week : 60 minutes * 24 hours * 7 days
-    ACCESS_TOKEN_EXPIRE_TIME: int = 60 * 24 * 7
+    # 60 minutes * 24 hours * 3 days
+    ACCESS_TOKEN_EXPIRE_TIME: int = 60 * 24 * 3
+    REFRESH_TOKEN_EXPIRE_TIME: int = 60 * 24 * 7
     # SERVER_NAME: str = "Mechoo"
     # SERVER_HOST: AnyHttpUrl
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
@@ -29,18 +29,12 @@ class Settings(BaseSettings):
     #         return None
     #     return v
 
-    def set_db_url(self) -> str:
-        user = os.getenv("POSTGRES_USER")
-        password = os.getenv("POSTGRES_PASSWORD")
-        server = os.getenv("POSTGRES_SERVER")
-        database = os.getenv("POSTGRES_DB")
-        return f'postgresql://{user}:{password}@{server}/{database}'
+    POSTGRES_SERVER: Optional[str] = os.getenv("POSTGRES_SERVER")
+    POSTGRES_DB: Optional[str] = os.getenv("POSTGRES_DB")
+    POSTGRES_USER: Optional[str] = os.getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD: Optional[str] = os.getenv("POSTGRES_PASSWORD")
     
-    # POSTGRES_SERVER: str
-    # POSTGRES_DB: str
-    # POSTGRES_DB_USER: str
-    # POSTGRES_DB_PASSWORD: str
-    SQLALCHEMY_DATABASE_URI: Optional[str] = None
+    PSQL_DB_URL: str = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:5432/{POSTGRES_DB}'
 
     # @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     # def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
