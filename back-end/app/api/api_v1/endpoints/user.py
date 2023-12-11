@@ -28,7 +28,7 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> UserOutput:
 def signin(*, session: SessionDep, user_in:UserSignin) -> Optional[TokenOutput]:
     user = crud.user.authenticate(db=session, email=user_in.email, password=user_in.password)
     if user:
-        tokens = create_token(user.email)
+        tokens = create_token(user.id)
         return tokens
     else:
         return None
