@@ -1,15 +1,15 @@
 from datetime import datetime
 
+from models.base import Base
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import DeclarativeBase, Mapped ,relationship, mapped_column
+from sqlalchemy.orm import Mapped ,relationship, mapped_column
 
-class Base(DeclarativeBase):
-    pass
+
 
 class User(Base):
     __tablename__ = "user"
 
-    id: Mapped[int] = mapped_column(primary_key=True, nullable=False, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
     email: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     username: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     password: Mapped[str] = mapped_column(String, nullable=False)

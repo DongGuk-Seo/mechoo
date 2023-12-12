@@ -7,6 +7,9 @@ class TokenBase(BaseModel):
 class TokenOutput(TokenBase):
     access_token: str
 
-class AuthInput(TokenBase):
+class TokenInput(TokenBase):
     user_id: int
     location: str
+
+class TokenUpdate(TokenBase):
+    is_expired: bool

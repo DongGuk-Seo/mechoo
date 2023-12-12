@@ -1,7 +1,7 @@
 from typing import Any, Optional
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.encoders import jsonable_encoder
 from sqlmodel import select
 
@@ -9,7 +9,7 @@ import crud
 from api.deps import SessionDep
 from core.security import create_token
 from schemas.user import UserCreate, UserOutput, UserSignin, UserBase, UsernameBase
-from schemas.token import TokenOutput
+from schemas.token import TokenOutput, TokenInput
 
 router = APIRouter()
 
@@ -25,11 +25,18 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> UserOutput:
     return res
 
 @router.post("/signin")
-def signin(*, session: SessionDep, user_in:UserSignin) -> Optional[TokenOutput]:
+def signin(request: Request, session: SessionDep, user_in: UserSignin) -> Optional[TokenOutput]:
     user = crud.user.authenticate(db=session, email=user_in.email, password=user_in.password)
-    if user:
+    if user and request.client:
         tokens = create_token(user.id)
-        return tokens
+        obj_in = TokenInput(
+            refresh_token=tokens.refresh_token, 
+            user_id=user.id,
+            location=request.client.host
+            )
+        crud.token.create(db=session, obj_in=obj_in)
+        res = TokenOutput(refresh_token=tokens.refresh_token, access_token=tokens.access_token)
+        return res
     else:
         return None
 
