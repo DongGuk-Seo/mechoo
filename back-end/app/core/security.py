@@ -3,6 +3,7 @@ from typing import Any, Union, Optional
 
 from jose import jwt
 from passlib.context import CryptContext
+from fastapi import HTTPException
 
 from core.config import settings
 from schemas.token import TokenOutput
@@ -12,8 +13,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 ALGORITHM = "HS256"
 
-def valid_token(exp: datetime) -> bool:
-    return datetime.utcnow() <= exp
+def is_expired(exp: datetime) -> bool:
+    return datetime.utcnow() > exp
 
 def create_token(subject: Union[str, Any]) -> TokenOutput:
     access_expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_TIME)
@@ -26,11 +27,11 @@ def create_token(subject: Union[str, Any]) -> TokenOutput:
     )
     return tokens
 
-def decode_token(token: str) -> Optional[dict]:
+def valid_token(token: str) -> Optional[bool]:
     decoded_token = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=ALGORITHM,)
-    if valid_token(decoded_token["exp"]):
-        return decoded_token
-
+    if is_expired(decoded_token["exp"]):
+        return False
+    return True
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
