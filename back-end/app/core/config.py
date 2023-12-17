@@ -4,7 +4,8 @@ from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, v
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    # SECRET_KEY: str = secrets.token_urlsafe(32)
+    SECRET_KEY: str = "KE_-7fMMsiHxWQEYYxUeuJZ-uk6Dm_NsIvfUT9rYJas"
     # 60 minutes * 24 hours * 3 days
     ACCESS_TOKEN_EXPIRE_TIME: int = 60 * 24 * 3
     REFRESH_TOKEN_EXPIRE_TIME: int = 60 * 24 * 7

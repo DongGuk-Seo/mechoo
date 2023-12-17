@@ -13,8 +13,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 ALGORITHM = "HS256"
 
-def is_expired(exp: datetime) -> bool:
-    return datetime.utcnow() > exp
+def is_expired(exp: float) -> bool:
+    return datetime.now() > datetime.fromtimestamp(exp)
 
 def create_token(subject: Union[str, Any]) -> TokenOutput:
     access_expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_TIME)
@@ -30,8 +30,8 @@ def create_token(subject: Union[str, Any]) -> TokenOutput:
 def valid_token(token: str) -> Optional[bool]:
     decoded_token = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=ALGORITHM,)
     if is_expired(decoded_token["exp"]):
-        return False
-    return True
+        return True
+    return False
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
