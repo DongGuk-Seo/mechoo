@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Union
+from typing import Optional, List
 
 from sqlalchemy.orm import Session
 from crud.base import CRUDBase
@@ -6,10 +6,13 @@ from models.menu import Menu
 from schemas.menu import MenuCreate, MenuUpdate
 
 class CRUDMenu(CRUDBase[Menu, MenuCreate, MenuUpdate]):
+    def get_all_menu(self, db: Session, name: str) -> List[Menu]:
+        return db.query(Menu).filter(Menu.name == name).all()
+    
     def get_menu_by_name(self, db: Session, name: str) -> Optional[Menu]:
         return db.query(Menu).filter(Menu.name == name).first()
     
-    def get_user_by_id(self, db: Session, id: int) -> Optional[Menu]:
+    def get_menu_by_id(self, db: Session, id: int) -> Optional[Menu]:
         return db.query(Menu).filter(Menu.id == id).first()
 
     def create(self, db: Session, obj_in: MenuCreate) -> Menu:
