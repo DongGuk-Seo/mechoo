@@ -5,11 +5,11 @@ from crud import token
 from api.deps import SessionDep
 from schemas.token import TokenBase, TokenInput, TokenOutput
 from core.security import create_token, valid_token
+from core.utils import exception_401_unauthorized
 
 router = APIRouter()
 
-def unauth_exception(text: str) -> HTTPException:
-    return HTTPException(401, text)
+
 
 @router.post("/reissue")
 def reissue_token(request: Request,session: SessionDep, token_in: TokenBase) -> Optional[TokenOutput]:
@@ -19,7 +19,7 @@ def reissue_token(request: Request,session: SessionDep, token_in: TokenBase) -> 
     if not valid and request.client:
         token_model = token.get_user_by_refresh_token(session, token_in.refresh_token)
         if token_model.is_expired:
-            raise unauth_exception("파기된 토큰입니다.")
+            raise exception_401_unauthorized("파기된 토큰입니다.")
         
         token.expire_token(db=session, db_obj=token_model)
         new_tokens = create_token(token_model.user_id)
@@ -33,4 +33,4 @@ def reissue_token(request: Request,session: SessionDep, token_in: TokenBase) -> 
         token.create(db=session, obj_in=obj_in)
         return TokenOutput(refresh_token=new_tokens.refresh_token, access_token=new_tokens.access_token)
     
-    raise unauth_exception("토큰 검증에 실패하였습니다.")
+    raise exception_401_unauthorized("토큰 검증에 실패하였습니다.")

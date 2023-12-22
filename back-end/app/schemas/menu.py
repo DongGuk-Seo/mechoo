@@ -7,11 +7,9 @@ class MenuBase(BaseModel):
 class MenuCreate(MenuBase):
     summary: str
 
-class MenuUpdate(MenuBase):
+class MenuUpdate(BaseModel):
+    id: int
     summary: Optional[str]
 
 class MenuOutput(MenuBase):
     id: int
-
-    class Config:
-        orm_mode = True
