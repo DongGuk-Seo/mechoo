@@ -16,11 +16,7 @@ class CRUDMenu(CRUDBase[Menu, MenuCreate, MenuUpdate]):
         return db.query(Menu).filter(Menu.id == id).first()
 
     def create(self, db: Session, obj_in: MenuCreate) -> Menu:
-        db_obj = Menu(
-            name=obj_in.name,
-            summary=obj_in.summary
-
-        )
+        db_obj = Menu(**obj_in.dict())
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)

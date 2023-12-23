@@ -19,7 +19,7 @@ class MenuDetail(Base):
     hot_level: Mapped[int] = mapped_column(Integer, nullable=False)
     sour_level: Mapped[int] = mapped_column(Integer, nullable=False)
     oil_level: Mapped[int] = mapped_column(Integer, nullable=False)
-    include_meet: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    include_meat: Mapped[bool] = mapped_column(Boolean, nullable=False)
     include_veget: Mapped[bool] = mapped_column(Boolean , nullable=False)
     food_type: Mapped[str] = mapped_column(String, nullable=False)
     country: Mapped[str] = mapped_column(String, nullable=False)
