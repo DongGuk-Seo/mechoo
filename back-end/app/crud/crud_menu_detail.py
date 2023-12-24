@@ -2,11 +2,12 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 from crud.base import CRUDBase
+from core.utils import exception_400_already_exist
 from models.menu import MenuDetail
 from schemas.menu_detail import MenuDetailBase, MenuDetailCreate, MenuDetailUpdate
 
 class CRUDMenuDetail(CRUDBase[MenuDetail, MenuDetailCreate, MenuDetailUpdate]):
-    def get_menu_by_menu_id(self, db: Session, menu_id: int) -> Optional[MenuDetail]:
+    def get_menu_detail_by_menu_id(self, db: Session, menu_id: int) -> Optional[MenuDetail]:
         return db.query(MenuDetail).filter(MenuDetail.menu_id == menu_id).first()
 
     def create(self, db: Session, obj_in: MenuDetailCreate) -> MenuDetail:
@@ -22,5 +23,9 @@ class CRUDMenuDetail(CRUDBase[MenuDetail, MenuDetailCreate, MenuDetailUpdate]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
+    
+    def valid(self, db:Session, menu_id:int) -> None:
+        if self.get_menu_detail_by_menu_id(db=db, menu_id=menu_id):
+            raise exception_400_already_exist("이미 존재하는 자료입니다.")
 
 menu_detail = CRUDMenuDetail(MenuDetail)

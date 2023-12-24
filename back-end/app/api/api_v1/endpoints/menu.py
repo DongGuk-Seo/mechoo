@@ -1,31 +1,36 @@
-from typing import Optional
+from typing import Optional, Union
 
-from fastapi import APIRouter, Request, HTTPException
-from crud import menu
+from fastapi import APIRouter, Request, HTTPException, Response
+from crud import menu, menu_detail
 from api.deps import SessionDep
 from models.menu import Menu
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
-from core.utils import exception_404_not_found
+from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput
+from core.utils import exception_400_already_exist, exception_404_not_found
 
 router = APIRouter()
 
 @router.post("")
-def create_menu(session: SessionDep, menu_in: MenuCreate) -> MenuOutput:
+async def create_menu(session: SessionDep, menu_in: MenuCreate) -> MenuOutput:
     menu_model = menu.create(db=session, obj_in=menu_in)
-    res = MenuOutput(
-        id=menu_model.id,
-        name=menu_model.name
-    )
+    res = MenuOutput(**menu_model.__dict__)
     return res
 
 @router.put("/summary")
-def update_summary(session: SessionDep, menu_in: MenuUpdate) -> MenuOutput:
+async def update_summary(session: SessionDep, menu_in: MenuUpdate) -> MenuOutput:
     menu_model = menu.get_menu_by_id(db=session, id=menu_in.id)
     if menu_model:
         new_menu = menu.update(db=session, db_obj=menu_model, obj_in= menu_in)
-        res = MenuOutput(
-            id=new_menu.id,
-            name=new_menu.name
-        )
+        res = MenuOutput(**new_menu.__dict__)
         return res
-    raise exception_404_not_found("존재하지 않는")
+    raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
+
+@router.post("/detail")
+async def create_menu_detail(session: SessionDep, menu_detail_in: MenuDetailCreate) -> MenuDetailOutput:
+    if menu.get_menu_by_id(db=session,id=menu_detail_in.menu_id):
+        menu_detail.valid(db=session,menu_id=menu_detail_in.menu_id)
+        new_menu_detail = menu_detail.create(db=session, obj_in=menu_detail_in)
+        res = MenuDetailOutput(**new_menu_detail.__dict__)
+        return res 
+    raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
+    
