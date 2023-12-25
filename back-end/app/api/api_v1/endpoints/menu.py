@@ -13,24 +13,21 @@ router = APIRouter()
 @router.post("")
 async def create_menu(session: SessionDep, menu_in: MenuCreate) -> MenuOutput:
     menu_model = menu.create(db=session, obj_in=menu_in)
-    res = MenuOutput(**menu_model.__dict__)
-    return res
+    return MenuOutput(**menu_model.__dict__)
 
 @router.put("/summary")
 async def update_summary(session: SessionDep, menu_in: MenuUpdate) -> MenuOutput:
     menu_model = menu.get_menu_by_id(db=session, id=menu_in.id)
     if menu_model:
         new_menu = menu.update(db=session, db_obj=menu_model, obj_in= menu_in)
-        res = MenuOutput(**new_menu.__dict__)
-        return res
+        return MenuOutput(**new_menu.__dict__)
     raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
 
 @router.post("/detail")
 async def create_menu_detail(session: SessionDep, menu_detail_in: MenuDetailCreate) -> MenuDetailOutput:
     if menu.get_menu_by_id(db=session,id=menu_detail_in.menu_id):
-        menu_detail.valid(db=session,menu_id=menu_detail_in.menu_id)
-        new_menu_detail = menu_detail.create(db=session, obj_in=menu_detail_in)
-        res = MenuDetailOutput(**new_menu_detail.__dict__)
-        return res 
+        menu_detail.valid_is_exist(db=session,menu_id=menu_detail_in.menu_id)
+        menu_detail_model = menu_detail.create(db=session, obj_in=menu_detail_in)
+        return MenuDetailOutput(**menu_detail_model.__dict__) 
     raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
     
