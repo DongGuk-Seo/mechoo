@@ -1,11 +1,12 @@
 from typing import Optional, Union
 
 from fastapi import APIRouter, Request, HTTPException, Response
-from crud import menu, menu_detail
+from crud import menu, menu_detail, ingredient
 from api.deps import SessionDep
-from models.menu import Menu
+from models.menu import Menu, Ingredient
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
 from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput, MenuDetailUpdate
+from schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOutput
 from core.utils import exception_400_already_exist, exception_404_not_found
 
 router = APIRouter()
@@ -41,3 +42,9 @@ async def update_menu_detail(session: SessionDep, menu_detail_in: MenuDetailUpda
         raise exception_404_not_found("존재하지 않는 메뉴 세부정보 입니다.")
     raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
     
+@router.post("/ingredient")
+async def create_ingredient(session: SessionDep, ingredient_in: IngredientCreate) -> IngredientOutput:
+    if ingredient.get_ingredient_by_name(db=session,name=ingredient_in.name):
+        ingredient_model = ingredient.create(db=session, obj_in=ingredient_in)
+        return IngredientOutput(**ingredient_model.__dict__) 
+    raise exception_404_not_found("존재하지 않는 메뉴 입니다.")

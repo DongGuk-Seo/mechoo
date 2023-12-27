@@ -6,9 +6,12 @@ from core.utils import exception_400_already_exist
 from models.menu import Ingredient
 from schemas.ingredient import IngredientCreate, IngredientUpdate
 
-class CRUDIngredientDetail(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
+class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
     def get_ingredient_by_id(self, db: Session, id:int) -> Optional[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.id == id).first()
+    
+    def get_ingredient_by_name(self, db: Session, name:str) -> Optional[Ingredient]:
+        return db.query(Ingredient).filter(Ingredient.name == name).first()
 
     def create(self, db: Session, obj_in: IngredientCreate) -> Ingredient:
         db_obj = Ingredient(**obj_in.dict())
@@ -24,4 +27,4 @@ class CRUDIngredientDetail(CRUDBase[Ingredient, IngredientCreate, IngredientUpda
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
 
-ingredient_detail = CRUDIngredientDetail(Ingredient)
+ingredient = CRUDIngredient(Ingredient)
