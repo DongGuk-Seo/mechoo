@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from fastapi import APIRouter, Request, HTTPException, Response
 from crud import menu, menu_detail, ingredient
@@ -45,6 +45,17 @@ async def update_menu_detail(session: SessionDep, menu_detail_in: MenuDetailUpda
 @router.post("/ingredient")
 async def create_ingredient(session: SessionDep, ingredient_in: IngredientCreate) -> IngredientOutput:
     if ingredient.get_ingredient_by_name(db=session,name=ingredient_in.name):
-        ingredient_model = ingredient.create(db=session, obj_in=ingredient_in)
-        return IngredientOutput(**ingredient_model.__dict__) 
-    raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
+        raise exception_400_already_exist("이미 존재하는 재료입니다.")
+    ingredient_model = ingredient.create(db=session, obj_in=ingredient_in)
+    return IngredientOutput(**ingredient_model.__dict__)
+
+@router.get("/ingredient")
+async def get_ingredient_all(session: SessionDep) -> List[IngredientOutput]:
+    data = ingredient.get_ingredient_all(db=session)
+    print(data)
+    return [IngredientOutput(**i.__dict__) for i in data]
+
+@router.get("/ingredient/{type}")
+async def get_ingredient_by_type(session: SessionDep, type: str) -> List[IngredientOutput]:
+    data = ingredient.get_ingredient_all_by_type(db=session,type=type)
+    return [IngredientOutput(**datum.__dict__) for datum in data]

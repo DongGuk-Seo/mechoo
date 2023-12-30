@@ -7,8 +7,11 @@ from models.menu import Ingredient
 from schemas.ingredient import IngredientCreate, IngredientUpdate
 
 class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
-    def get_ingredient_by_id(self, db: Session, id:int) -> Optional[Ingredient]:
-        return db.query(Ingredient).filter(Ingredient.id == id).first()
+    def get_ingredient_all(self, db: Session) -> List[Ingredient]:
+        return db.query(Ingredient).all()
+    
+    def get_ingredient_all_by_type(self, db: Session, type:str) -> List[Ingredient]:
+        return db.query(Ingredient).filter(Ingredient.type == type).all()
     
     def get_ingredient_by_name(self, db: Session, name:str) -> Optional[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.name == name).first()
