@@ -53,7 +53,6 @@ async def create_ingredient(session: SessionDep, ingredient_in: IngredientCreate
 @router.get("/ingredient")
 async def get_ingredient_all(session: SessionDep) -> List[IngredientOutput]:
     data = ingredient.get_ingredient_all(db=session)
-    print(data)
     return [IngredientOutput(**i.__dict__) for i in data]
 
 @router.get("/ingredient/{type}")
@@ -64,6 +63,11 @@ async def get_ingredient_by_type(session: SessionDep, type: str) -> List[Ingredi
 @router.post("/recipe")
 async def create_recipe(session: SessionDep, recipe_in: RecipeCreate) -> RecipeOutput:
     if recipe.get_recipe_by_menu_id(db=session, menu_id=recipe_in.menu_id):
-        raise exception_400_already_exist("이미 존재하는 재료입니다.")
+        raise exception_400_already_exist("이미 존재하는 레시피입니다.")
     recipe_model = recipe.create(db=session, obj_in=recipe_in)
     return RecipeOutput(**recipe_model.__dict__)
+
+@router.get("/recipe")
+async def get_recipe_all(session: SessionDep) -> List[RecipeOutput]:
+    data = recipe.get_all_recipe(db=session)
+    return [RecipeOutput(**i.__dict__) for i in data]

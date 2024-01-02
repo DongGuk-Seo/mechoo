@@ -9,6 +9,9 @@ class CRUDRecipe(CRUDBase[MenuRecipe, RecipeCreate, RecipeUpdate]):
     def get_recipe_by_menu_id(self, db: Session, menu_id: int) -> Optional[MenuRecipe]:
         return db.query(MenuRecipe).filter(MenuRecipe.menu_id ==  menu_id).first()
     
+    def get_all_recipe(self, db: Session) -> List[MenuRecipe]:
+        return db.query(MenuRecipe).all()
+    
     def create(self, db: Session, obj_in: RecipeCreate) -> MenuRecipe:
         db_obj = MenuRecipe(**obj_in.dict())
         db.add(db_obj)
