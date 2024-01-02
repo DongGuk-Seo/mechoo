@@ -1,12 +1,13 @@
 from typing import Optional, Union, List
 
 from fastapi import APIRouter, Request, HTTPException, Response
-from crud import menu, menu_detail, ingredient
+from crud import menu, menu_detail, ingredient, recipe
 from api.deps import SessionDep
 from models.menu import Menu, Ingredient
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
 from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput, MenuDetailUpdate
 from schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOutput
+from schemas.recipe import RecipeCreate, RecipeOutput
 from core.utils import exception_400_already_exist, exception_404_not_found
 
 router = APIRouter()
@@ -59,3 +60,10 @@ async def get_ingredient_all(session: SessionDep) -> List[IngredientOutput]:
 async def get_ingredient_by_type(session: SessionDep, type: str) -> List[IngredientOutput]:
     data = ingredient.get_ingredient_all_by_type(db=session,type=type)
     return [IngredientOutput(**datum.__dict__) for datum in data]
+
+@router.post("/recipe")
+async def create_recipe(session: SessionDep, recipe_in: RecipeCreate) -> RecipeOutput:
+    if recipe.get_recipe_by_menu_id(db=session, menu_id=recipe_in.menu_id):
+        raise exception_400_already_exist("이미 존재하는 재료입니다.")
+    recipe_model = recipe.create(db=session, obj_in=recipe_in)
+    return RecipeOutput(**recipe_model.__dict__)
