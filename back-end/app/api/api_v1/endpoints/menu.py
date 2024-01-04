@@ -71,3 +71,10 @@ async def create_recipe(session: SessionDep, recipe_in: RecipeCreate) -> RecipeO
 async def get_recipe_all(session: SessionDep) -> List[RecipeOutput]:
     data = recipe.get_all_recipe(db=session)
     return [RecipeOutput(**i.__dict__) for i in data]
+
+@router.get("/recipe/{menu_id}")
+async def get_recipe_by_menu_id(session: SessionDep, menu_id:int) -> Optional[RecipeOutput]:
+    data = recipe.get_recipe_by_menu_id(db=session, menu_id=menu_id)
+    if data:
+        return RecipeOutput(**data.__dict__)
+    raise exception_404_not_found("레시피가 존재하지 않는 메뉴입니다.")
