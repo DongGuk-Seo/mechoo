@@ -1,7 +1,7 @@
 from typing import Optional, Union, List
 
 from fastapi import APIRouter, Request, HTTPException, Response
-from crud import menu, menu_detail, ingredient, recipe, menu_image
+from crud import menu, menu_detail, ingredient, recipe, menu_image, menu_ingredient
 from api.deps import SessionDep
 from models.menu import Menu, Ingredient
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
@@ -9,6 +9,7 @@ from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput, MenuDetailUp
 from schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOutput
 from schemas.recipe import RecipeCreate, RecipeOutput
 from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
+from schemas.menu_ingredient import MenuIngredientRequest, MenuIngredientCreate, MenuIngredientUpdate, MenuIngredientOutput
 from core.utils import exception_400_already_exist, exception_404_not_found
 
 router = APIRouter()
@@ -86,3 +87,15 @@ async def create_menu_image(session: SessionDep, menu_image_in: MenuImageCreate)
         raise exception_400_already_exist("이미 존재하는 이미지입니다.")
     menu_image_model = menu_image.create(db=session, obj_in=menu_image_in)
     return MenuImageOutput(**menu_image_model.__dict__)
+
+@router.post("/menu/ingredient")
+async def create_menu_ingredient(session: SessionDep, menu_ingredient_in: MenuIngredientRequest) -> MenuIngredientOutput:
+    menu_id = menu_ingredient_in.menu_id
+    ingredient_list = []
+    for ingredient_id in menu_ingredient_in.ingredient_list:
+        menu_ingredient_model = menu_ingredient.create(db=session, obj_in=MenuIngredientCreate(
+            menu_id= menu_id,
+            ingredient_id=ingredient_id
+            ))
+        ingredient_list.append(menu_ingredient_model.ingredient_id)
+    return MenuIngredientOutput(menu_id=menu_id, ingredient_list=ingredient_list)
