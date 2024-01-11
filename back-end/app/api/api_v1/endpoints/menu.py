@@ -19,8 +19,8 @@ async def create_menu(session: SessionDep, menu_in: MenuCreate) -> MenuOutput:
     menu_model = menu.create(db=session, obj_in=menu_in)
     return MenuOutput(**menu_model.__dict__)
 
-@router.put("/summary")
-async def update_summary(session: SessionDep, menu_in: MenuUpdate) -> MenuOutput:
+@router.put("")
+async def update_menu(session: SessionDep, menu_in: MenuUpdate) -> MenuOutput:
     menu_model = menu.get_menu_by_id(db=session, id=menu_in.id)
     if menu_model:
         new_menu = menu.update(db=session, db_obj=menu_model, obj_in= menu_in)
