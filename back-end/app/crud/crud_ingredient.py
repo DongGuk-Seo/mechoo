@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 from crud.base import CRUDBase
-from core.utils import exception_400_already_exist
+from utils.exceptions import exception_400_client_error
 from models.menu import Ingredient
 from schemas.ingredient import IngredientCreate, IngredientUpdate
 

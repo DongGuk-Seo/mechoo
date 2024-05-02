@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 from crud.base import CRUDBase
-from core.utils import exception_400_already_exist
+from utils.exceptions import exception_400_client_error
 from models.menu import MenuDetail
 from schemas.menu_detail import MenuDetailBase, MenuDetailCreate, MenuDetailUpdate
 
@@ -26,6 +26,6 @@ class CRUDMenuDetail(CRUDBase[MenuDetail, MenuDetailCreate, MenuDetailUpdate]):
     
     def valid_is_exist(self, db:Session, menu_id:int) -> None:
         if self.get_menu_detail_by_menu_id(db=db, menu_id=menu_id):
-            raise exception_400_already_exist("이미 존재하는 자료입니다.")
+            raise exception_400_client_error("이미 존재하는 자료입니다.")
 
 menu_detail = CRUDMenuDetail(MenuDetail)

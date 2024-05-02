@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 from crud.base import CRUDBase
-from core.utils import exception_400_already_exist
+from utils.exceptions import exception_400_client_error
 from models.menu import MenuImage
 from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
 
@@ -26,6 +26,6 @@ class CRUDMenuImage(CRUDBase[MenuImage, MenuImageCreate, MenuImageUpdate]):
     
     def valid_is_exist(self, db:Session, menu_id:int) -> None:
         if self.get_menu_image_by_menu_id(db=db, menu_id=menu_id):
-            raise exception_400_already_exist("이미 존재하는 이미지입니다.")
+            raise exception_400_client_error("이미 존재하는 이미지입니다.")
 
 menu_image = CRUDMenuImage(MenuImage)
