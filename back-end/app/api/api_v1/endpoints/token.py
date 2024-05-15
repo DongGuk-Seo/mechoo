@@ -5,7 +5,7 @@ from crud import token
 from api.deps import SessionDep
 from schemas.token import TokenBase, TokenInput, TokenOutput
 from core.security import create_token, valid_token
-from core.utils import exception_401_unauthorized
+from utils.exceptions import exception_401_unauthorized
 
 router = APIRouter()
 

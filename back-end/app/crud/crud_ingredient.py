@@ -11,10 +11,10 @@ class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
         return db.query(Ingredient).all()
     
     def get_ingredient_all_by_type(self, db: Session, type:str) -> List[Ingredient]:
-        return db.query(Ingredient).filter(Ingredient.type == type).all()
+        return db.query(Ingredient).filter(Ingredient.ingredient_type == type).all()
     
     def get_ingredient_by_name(self, db: Session, name:str) -> Optional[Ingredient]:
-        return db.query(Ingredient).filter(Ingredient.name == name).first()
+        return db.query(Ingredient).filter(Ingredient.ingredient_name == name).first()
 
     def create(self, db: Session, obj_in: IngredientCreate) -> Ingredient:
         db_obj = Ingredient(**obj_in.dict())
