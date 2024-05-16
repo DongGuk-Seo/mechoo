@@ -9,7 +9,9 @@ class MenuCreate(MenuBase):
 
 class MenuUpdate(BaseModel):
     id: int
-    summary: Optional[str]
+
+class MenuDelete(BaseModel):
+    id: int
 
 class MenuOutput(MenuBase):
     id: int

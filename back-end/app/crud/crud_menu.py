@@ -28,5 +28,12 @@ class CRUDMenu(CRUDBase[Menu, MenuCreate, MenuUpdate]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
+    
+    def delete(self, db: Session, id: int) -> bool:
+        obj = db.query(Menu).filter(Menu.id == id)
+        if obj:
+            obj.delete()
+            return True
+        return False
 
 menu = CRUDMenu(Menu)
