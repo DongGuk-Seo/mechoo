@@ -28,10 +28,10 @@ async def update_menu(db: SessionDep, obj_in: MenuUpdate) -> MenuOutput:
     updated_menu_model = await menu_service.update_menu(db=db, obj_in=obj_in)
     return MenuOutput(**updated_menu_model.__dict__)
 
-@router.delete("/{menu_id}")
-async def delete_menu(db: SessionDep, menu_id: int) -> Response:
+@router.delete("/{id}")
+async def delete_menu(db: SessionDep, id: int) -> Response:
     menu_service = MenuService()
-    return await menu_service.delete_menu(db=db, menu_id=menu_id)
+    return await menu_service.delete_menu(db=db, id=id)
 
 @router.post("/detail")
 async def create_menu_detail(db: SessionDep, obj_in: MenuDetailCreate) -> MenuDetailOutput:
@@ -44,6 +44,11 @@ async def update_menu_detail(db: SessionDep, obj_in: MenuDetailUpdate) -> MenuDe
     menu_detail_service = MenuDetailService()
     menu_detail_model = await menu_detail_service.update_menu_detail(db=db, obj_in=obj_in)
     return MenuDetailOutput(**menu_detail_model.__dict__)
+
+@router.delete("/detail/{id}")
+async def delete_menu_detail(db: SessionDep, id: int) -> Response:
+    menu_detail_service = MenuDetailService()
+    return await menu_detail_service.delete_menu_detail(db=db, id=id)
     
 @router.post("/ingredient")
 async def create_ingredient(session: SessionDep, ingredient_in: IngredientCreate) -> IngredientOutput:

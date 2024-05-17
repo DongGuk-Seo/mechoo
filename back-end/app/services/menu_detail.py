@@ -1,4 +1,5 @@
 from crud import menu, menu_detail
+from fastapi import Response
 from api.deps import SessionDep
 from schemas.menu_detail import MenuDetailCreate, MenuDetailUpdate
 from utils.exceptions import exception_400_client_error, exception_404_not_found
@@ -33,3 +34,9 @@ class MenuDetailService:
         menu_detail_model = await self.valid_update_menu_detail(db=db, menu_id=obj_in.menu_id)
         updated_menu_detail_model = menu_detail.update(db=db, db_obj=menu_detail_model, obj_in=obj_in)
         return updated_menu_detail_model
+    
+    async def delete_menu_detail(self, db: SessionDep, id: int):
+        menu_detail_model = menu.delete(db=db, id=id)
+        if menu_detail_model:
+            return Response("상세 메뉴를 성공적으로 삭제했습니다.")
+        raise exception_404_not_found("존재하지 않는 메뉴 입니다.")

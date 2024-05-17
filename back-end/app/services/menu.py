@@ -21,8 +21,8 @@ class MenuService:
             return updated_menu_model
         raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
     
-    async def delete_menu(self, db: SessionDep, menu_id: int):
-        menu_model = menu.delete(db=db, id=menu_id)
+    async def delete_menu(self, db: SessionDep, id: int):
+        menu_model = menu.delete(db=db, id=id)
         if menu_model:
             return Response("메뉴를 성공적으로 삭제했습니다.")
         raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
