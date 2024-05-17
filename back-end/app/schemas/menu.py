@@ -7,10 +7,7 @@ class MenuBase(BaseModel):
 class MenuCreate(MenuBase):
     summary: str
 
-class MenuUpdate(BaseModel):
-    id: int
-
-class MenuDelete(BaseModel):
+class MenuUpdate(MenuCreate):
     id: int
 
 class MenuOutput(MenuBase):

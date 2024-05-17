@@ -30,9 +30,10 @@ class CRUDMenu(CRUDBase[Menu, MenuCreate, MenuUpdate]):
         return super().update(db, db_obj=db_obj, obj_in=update_data)
     
     def delete(self, db: Session, id: int) -> bool:
-        obj = db.query(Menu).filter(Menu.id == id)
+        obj = db.query(Menu).filter(Menu.id == id).first()
         if obj:
-            obj.delete()
+            db.delete(obj)
+            db.commit()
             return True
         return False
 
