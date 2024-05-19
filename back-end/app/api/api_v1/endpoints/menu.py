@@ -12,6 +12,7 @@ from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
 from schemas.menu_ingredient import MenuIngredientRequest, MenuIngredientCreate, MenuIngredientUpdate, MenuIngredientOutput
 from services.menu import MenuService
 from services.menu_detail import MenuDetailService
+from services.ingredient import IngredientService
 from utils.exceptions import exception_400_client_error, exception_404_not_found
 
 router = APIRouter()
@@ -51,16 +52,16 @@ async def delete_menu_detail(db: SessionDep, id: int) -> Response:
     return await menu_detail_service.delete_menu_detail(db=db, id=id)
     
 @router.post("/ingredient")
-async def create_ingredient(session: SessionDep, ingredient_in: IngredientCreate) -> IngredientOutput:
-    if ingredient.get_ingredient_by_name(db=session,name=ingredient_in.name):
-        raise exception_400_client_error("이미 존재하는 재료입니다.")
-    ingredient_model = ingredient.create(db=session, obj_in=ingredient_in)
+async def create_ingredient(db: SessionDep, obj_in: IngredientCreate) -> IngredientOutput:
+    ingredient_service = IngredientService()
+    ingredient_model = await ingredient_service.create_ingredient(db=db, obj_in=obj_in)
     return IngredientOutput(**ingredient_model.__dict__)
 
 @router.get("/ingredient")
-async def get_ingredient_all(session: SessionDep) -> List[IngredientOutput]:
-    data = ingredient.get_ingredient_all(db=session)
-    return [IngredientOutput(**i.__dict__) for i in data]
+async def get_ingredient_all(db: SessionDep) -> List[IngredientOutput]:
+    ingredient_service = IngredientService()
+    ingredient_models = await ingredient_service.get_all_ingredient(db=db)
+    return [IngredientOutput(**i.__dict__) for i in ingredient_models]
 
 @router.get("/ingredient/{type}")
 async def get_ingredient_by_type(session: SessionDep, type: str) -> List[IngredientOutput]:

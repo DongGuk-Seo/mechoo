@@ -10,8 +10,11 @@ class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
     def get_ingredient_all(self, db: Session) -> List[Ingredient]:
         return db.query(Ingredient).all()
     
-    def get_ingredient_all_by_type(self, db: Session, type:str) -> List[Ingredient]:
+    def get_ingredient_all_by_type(self, db: Session, type: str) -> List[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.ingredient_type == type).all()
+    
+    def get_ingredient_by_id(self, db: Session, id: int) -> Optional[Ingredient]:
+        return db.query(Ingredient).filter(Ingredient.id == id).first()
     
     def get_ingredient_by_name(self, db: Session, name:str) -> Optional[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.ingredient_name == name).first()
@@ -29,5 +32,13 @@ class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
+    
+    def delete(self, db: Session, id: int) -> bool:
+        obj = db.query(Ingredient).filter(Ingredient.id == id).first()
+        if obj:
+            db.delete(obj)
+            db.commit()
+            return True
+        return False
 
 ingredient = CRUDIngredient(Ingredient)
