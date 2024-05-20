@@ -61,12 +61,13 @@ async def create_ingredient(db: SessionDep, obj_in: IngredientCreate) -> Ingredi
 async def get_ingredient_all(db: SessionDep) -> List[IngredientOutput]:
     ingredient_service = IngredientService()
     ingredient_models = await ingredient_service.get_all_ingredient(db=db)
-    return [IngredientOutput(**i.__dict__) for i in ingredient_models]
+    return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
 
-@router.get("/ingredient/{type}")
-async def get_ingredient_by_type(session: SessionDep, type: str) -> List[IngredientOutput]:
-    data = ingredient.get_ingredient_all_by_type(db=session,type=type)
-    return [IngredientOutput(**datum.__dict__) for datum in data]
+@router.get("/ingredient/{ingredient_type}")
+async def get_ingredient_by_ingredient_type(db: SessionDep, ingredient_type: str) -> List[IngredientOutput]:
+    ingredient_service = IngredientService()
+    ingredient_models = await ingredient_service.get_all_ingredient_by_type(db=db, ingredient_type=ingredient_type)
+    return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
 
 @router.post("/recipe")
 async def create_recipe(session: SessionDep, recipe_in: RecipeCreate) -> RecipeOutput:

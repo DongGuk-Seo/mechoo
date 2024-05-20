@@ -8,7 +8,10 @@ from utils.exceptions import exception_400_client_error, exception_404_not_found
 
 class IngredientService:
     async def get_all_ingredient(self, db: SessionDep) -> List[Ingredient]:
-        return ingredient.get_ingredient_all(db)
+        return ingredient.get_ingredient_all(db=db)
+    
+    async def get_all_ingredient_by_type(self, db: SessionDep, ingredient_type: str) -> List[Ingredient]:
+        return ingredient.get_ingredient_all_by_type(db=db, ingredient_type=ingredient_type)
     
     async def is_existed_ingredient_by_name(self, db: SessionDep, name: str) -> Optional[Ingredient]:
         return ingredient.get_ingredient_by_name(db=db, name=name)

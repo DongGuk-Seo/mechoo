@@ -10,8 +10,8 @@ class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
     def get_ingredient_all(self, db: Session) -> List[Ingredient]:
         return db.query(Ingredient).all()
     
-    def get_ingredient_all_by_type(self, db: Session, type: str) -> List[Ingredient]:
-        return db.query(Ingredient).filter(Ingredient.ingredient_type == type).all()
+    def get_ingredient_all_by_type(self, db: Session, ingredient_type: str) -> List[Ingredient]:
+        return db.query(Ingredient).filter(Ingredient.ingredient_type == ingredient_type).all()
     
     def get_ingredient_by_id(self, db: Session, id: int) -> Optional[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.id == id).first()
