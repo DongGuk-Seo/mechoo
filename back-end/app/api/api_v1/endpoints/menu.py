@@ -13,6 +13,7 @@ from schemas.menu_ingredient import MenuIngredientRequest, MenuIngredientCreate,
 from services.menu import MenuService
 from services.menu_detail import MenuDetailService
 from services.ingredient import IngredientService
+from services.recipe import RecipeService
 from utils.exceptions import exception_400_client_error, exception_404_not_found
 
 router = APIRouter()
@@ -63,30 +64,23 @@ async def get_ingredient_all(db: SessionDep) -> List[IngredientOutput]:
     ingredient_models = await ingredient_service.get_all_ingredient(db=db)
     return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
 
-@router.get("/ingredient/{ingredient_type}")
+@router.get("/ingredient/")
 async def get_ingredient_by_ingredient_type(db: SessionDep, ingredient_type: str) -> List[IngredientOutput]:
     ingredient_service = IngredientService()
     ingredient_models = await ingredient_service.get_all_ingredient_by_type(db=db, ingredient_type=ingredient_type)
     return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
 
 @router.post("/recipe")
-async def create_recipe(session: SessionDep, recipe_in: RecipeCreate) -> RecipeOutput:
-    if recipe.get_recipe_by_menu_id(db=session, menu_id=recipe_in.menu_id):
-        raise exception_400_client_error("이미 존재하는 레시피입니다.")
-    recipe_model = recipe.create(db=session, obj_in=recipe_in)
+async def create_recipe(db: SessionDep, obj_in: RecipeCreate) -> RecipeOutput:
+    recipe_service = RecipeService()
+    recipe_model = await recipe_service.create_recipe(db=db, obj_in=obj_in)
     return RecipeOutput(**recipe_model.__dict__)
 
-@router.get("/recipe")
-async def get_recipe_all(session: SessionDep) -> List[RecipeOutput]:
-    data = recipe.get_all_recipe(db=session)
-    return [RecipeOutput(**i.__dict__) for i in data]
-
-@router.get("/recipe/{menu_id}")
-async def get_recipe_by_menu_id(session: SessionDep, menu_id:int) -> Optional[RecipeOutput]:
-    data = recipe.get_recipe_by_menu_id(db=session, menu_id=menu_id)
-    if data:
-        return RecipeOutput(**data.__dict__)
-    raise exception_404_not_found("레시피가 존재하지 않는 메뉴입니다.")
+@router.get("/recipe/")
+async def get_recipe_by_menu_id(db: SessionDep, menu_id:int) -> RecipeOutput:
+    recipe_service = RecipeService()
+    recipe_model = await recipe_service.get_recipe_by_menu_id(db=db, menu_id=menu_id)
+    return RecipeOutput(**recipe_model.__dict__)
 
 @router.post("/image")
 async def create_menu_image(session: SessionDep, menu_image_in: MenuImageCreate) -> MenuImageOutput:
