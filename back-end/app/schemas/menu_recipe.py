@@ -1,16 +1,16 @@
 from typing import Optional
 from pydantic import BaseModel
 
-class RecipeBase(BaseModel):
+class MenuRecipeBase(BaseModel):
     menu_id: int
 
-class RecipeCreate(RecipeBase):
+class MenuRecipeCreate(MenuRecipeBase):
     recipe: str
     source_link: str
 
-class RecipeUpdate(RecipeBase):
+class MenuRecipeUpdate(MenuRecipeBase):
     recipe: Optional[str]
     source_link: Optional[str]
 
-class RecipeOutput(RecipeCreate):
+class MenuRecipeOutput(MenuRecipeCreate):
     id: int

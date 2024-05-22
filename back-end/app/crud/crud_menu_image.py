@@ -23,9 +23,5 @@ class CRUDMenuImage(CRUDBase[MenuImage, MenuImageCreate, MenuImageUpdate]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
-    
-    def valid_is_exist(self, db:Session, menu_id:int) -> None:
-        if self.get_menu_image_by_menu_id(db=db, menu_id=menu_id):
-            raise exception_400_client_error("이미 존재하는 이미지입니다.")
 
 menu_image = CRUDMenuImage(MenuImage)

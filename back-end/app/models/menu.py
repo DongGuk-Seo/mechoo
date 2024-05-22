@@ -25,8 +25,8 @@ class MenuDetail(Base):
     food_type_id: Mapped[int] = mapped_column(Integer, nullable=False)
     country_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
-class Recipe(Base):
-    __tablename__ = "recipe"
+class MenuRecipe(Base):
+    __tablename__ = "menu_recipe"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
     menu_id: Mapped[int] = mapped_column(Integer,  nullable=False)

@@ -1,19 +1,20 @@
 from typing import Optional, Union, List
 
 from fastapi import APIRouter, Request, HTTPException, Response
-from crud import menu, menu_detail, ingredient, recipe, menu_image, menu_ingredient
+from crud import menu_ingredient
 from api.deps import SessionDep
 from models.menu import Menu, Ingredient
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
 from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput, MenuDetailUpdate
 from schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOutput
-from schemas.recipe import RecipeCreate, RecipeOutput
+from schemas.menu_recipe import MenuRecipeCreate, MenuRecipeOutput
 from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
 from schemas.menu_ingredient import MenuIngredientRequest, MenuIngredientCreate, MenuIngredientUpdate, MenuIngredientOutput
 from services.menu import MenuService
 from services.menu_detail import MenuDetailService
 from services.ingredient import IngredientService
-from services.recipe import RecipeService
+from services.menu_recipe import MenuRecipeService
+from services.menu_image import MenuImageService
 from utils.exceptions import exception_400_client_error, exception_404_not_found
 
 router = APIRouter()
@@ -71,22 +72,21 @@ async def get_ingredient_by_ingredient_type(db: SessionDep, ingredient_type: str
     return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
 
 @router.post("/recipe")
-async def create_recipe(db: SessionDep, obj_in: RecipeCreate) -> RecipeOutput:
-    recipe_service = RecipeService()
-    recipe_model = await recipe_service.create_recipe(db=db, obj_in=obj_in)
-    return RecipeOutput(**recipe_model.__dict__)
+async def create_menu_recipe(db: SessionDep, obj_in: MenuRecipeCreate) -> MenuRecipeOutput:
+    menu_recipe_service = MenuRecipeService()
+    menu_recipe_model = await menu_recipe_service.create_menu_recipe(db=db, obj_in=obj_in)
+    return MenuRecipeOutput(**menu_recipe_model.__dict__)
 
 @router.get("/recipe/")
-async def get_recipe_by_menu_id(db: SessionDep, menu_id:int) -> RecipeOutput:
-    recipe_service = RecipeService()
-    recipe_model = await recipe_service.get_recipe_by_menu_id(db=db, menu_id=menu_id)
-    return RecipeOutput(**recipe_model.__dict__)
+async def get_menu_recipe_by_menu_id(db: SessionDep, menu_id:int) -> MenuRecipeOutput:
+    menu_recipe_service = MenuRecipeService()
+    menu_recipe_model = await menu_recipe_service.get_menu_recipe_by_menu_id(db=db, menu_id=menu_id)
+    return MenuRecipeOutput(**menu_recipe_model.__dict__)
 
 @router.post("/image")
-async def create_menu_image(session: SessionDep, menu_image_in: MenuImageCreate) -> MenuImageOutput:
-    if menu_image.get_menu_image_by_menu_id(db=session, menu_id=menu_image_in.menu_id):
-        raise exception_400_client_error("이미 존재하는 이미지입니다.")
-    menu_image_model = menu_image.create(db=session, obj_in=menu_image_in)
+async def create_menu_image(db: SessionDep, obj_in: MenuImageCreate) -> MenuImageOutput:
+    menu_image_service = MenuImageService()
+    menu_image_model = await menu_image_service.create_menu_image(db=db, obj_in=obj_in)
     return MenuImageOutput(**menu_image_model.__dict__)
 
 @router.post("/menu/ingredient")
