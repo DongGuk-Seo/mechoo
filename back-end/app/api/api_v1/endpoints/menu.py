@@ -7,7 +7,7 @@ from models.menu import Menu, Ingredient
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
 from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput, MenuDetailUpdate
 from schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOutput
-from schemas.menu_recipe import MenuRecipeCreate, MenuRecipeOutput
+from schemas.menu_recipe import MenuRecipeCreate, MenuRecipeUpdate, MenuRecipeOutput
 from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
 from schemas.menu_ingredient import MenuIngredientRequest, MenuIngredientCreate, MenuIngredientUpdate, MenuIngredientOutput
 from services.menu import MenuService
@@ -75,6 +75,12 @@ async def get_ingredient_by_ingredient_type(db: SessionDep, ingredient_type: str
 async def create_menu_recipe(db: SessionDep, obj_in: MenuRecipeCreate) -> MenuRecipeOutput:
     menu_recipe_service = MenuRecipeService()
     menu_recipe_model = await menu_recipe_service.create_menu_recipe(db=db, obj_in=obj_in)
+    return MenuRecipeOutput(**menu_recipe_model.__dict__)
+
+@router.put("/recipe")
+async def update_menu_recipe(db: SessionDep, obj_in: MenuRecipeUpdate) -> MenuRecipeOutput:
+    menu_recipe_service = MenuRecipeService()
+    menu_recipe_model = await menu_recipe_service.update_menu_recipe(db=db, obj_in=obj_in)
     return MenuRecipeOutput(**menu_recipe_model.__dict__)
 
 @router.get("/recipe/")
