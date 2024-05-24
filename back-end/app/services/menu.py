@@ -5,11 +5,9 @@ from schemas.menu import MenuCreate, MenuUpdate
 from utils.exceptions import exception_400_client_error, exception_404_not_found
 
 class MenuService:
-    async def is_existed_menu_by_name(self, db: SessionDep, name: str):
-        return menu.get_menu_by_name(db=db, name=name)
-
+    
     async def create_menu(self, db: SessionDep, obj_in: MenuCreate):
-        if await self.is_existed_menu_by_name(db=db, name=obj_in.name):
+        if menu.get_menu_by_name(db=db, name=obj_in.name):
             raise exception_400_client_error("이미 존재하는 메뉴입니다.")
         menu_model = menu.create(db=db, obj_in=obj_in)
         return menu_model
