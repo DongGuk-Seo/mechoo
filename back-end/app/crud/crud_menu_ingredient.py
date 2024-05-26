@@ -23,5 +23,13 @@ class CRUDMenuIngredient(CRUDBase[MenuIngredient, MenuIngredientCreate, MenuIngr
         else:
             update_data = obj_in.dict(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
+    
+    def delete(self, db: Session, id: int) -> bool:
+        obj = db.query(MenuIngredient).filter(MenuIngredient.id == id).first()
+        if obj:
+            db.delete(obj)
+            db.commit()
+            return True
+        return False
 
 menu_ingredient = CRUDMenuIngredient(MenuIngredient)

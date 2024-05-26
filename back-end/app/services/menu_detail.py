@@ -28,4 +28,4 @@ class MenuDetailService:
         result = menu.delete(db=db, id=id)
         if result:
             return Response("상세 메뉴를 성공적으로 삭제했습니다.")
-        raise exception_404_not_found("존재하지 않는 메뉴 입니다.")
+        raise exception_404_not_found("존재하지 않는 메뉴입니다.")

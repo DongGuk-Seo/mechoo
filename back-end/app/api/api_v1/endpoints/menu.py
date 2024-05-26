@@ -3,18 +3,18 @@ from typing import Optional, Union, List
 from fastapi import APIRouter, Request, HTTPException, Response
 from crud import menu_ingredient
 from api.deps import SessionDep
-from models.menu import Menu, Ingredient
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
 from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput, MenuDetailUpdate
 from schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOutput
 from schemas.menu_recipe import MenuRecipeCreate, MenuRecipeUpdate, MenuRecipeOutput
 from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
-from schemas.menu_ingredient import MenuIngredientRequest, MenuIngredientCreate, MenuIngredientUpdate, MenuIngredientOutput
+from schemas.menu_ingredient import MenuIngredientCreateRequest, MenuIngredientCreate, MenuIngredientUpdate, MenuIngredientOutput
 from services.menu import MenuService
 from services.menu_detail import MenuDetailService
 from services.ingredient import IngredientService
 from services.menu_recipe import MenuRecipeService
 from services.menu_image import MenuImageService
+from services.menu_ingredient import MenuIngredientService
 from utils.exceptions import exception_400_client_error, exception_404_not_found
 
 router = APIRouter()
@@ -96,13 +96,11 @@ async def create_menu_image(db: SessionDep, obj_in: MenuImageCreate) -> MenuImag
     return MenuImageOutput(**menu_image_model.__dict__)
 
 @router.post("/menu/ingredient")
-async def create_menu_ingredient(session: SessionDep, menu_ingredient_in: MenuIngredientRequest) -> MenuIngredientOutput:
-    menu_id = menu_ingredient_in.menu_id
-    ingredient_list = []
-    for ingredient_id in menu_ingredient_in.ingredient_list:
-        menu_ingredient_model = menu_ingredient.create(db=session, obj_in=MenuIngredientCreate(
-            menu_id= menu_id,
-            ingredient_id=ingredient_id
-            ))
-        ingredient_list.append(menu_ingredient_model.ingredient_id)
-    return MenuIngredientOutput(menu_id=menu_id, ingredient_list=ingredient_list)
+async def create_menu_ingredient(db: SessionDep, obj_in: MenuIngredientCreateRequest) -> MenuIngredientOutput:
+    menu_ingredient_service = MenuIngredientService()
+    output = MenuIngredientOutput(menu_id=-1, ingredient_list=[])
+    for ingredient_id in obj_in.ingredient_id_list:
+        menu_ingredient_model = await menu_ingredient_service.create_menu_ingredient(db=db, obj_in=MenuIngredientCreate(menu_id=obj_in.menu_id, ingredient_id=ingredient_id))
+        output.menu_id = menu_ingredient_model.menu_id
+        output.ingredient_list.append(menu_ingredient_model.ingredient_id)
+    return output
