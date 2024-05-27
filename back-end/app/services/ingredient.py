@@ -2,7 +2,7 @@ from crud import ingredient
 from fastapi import Response
 from typing import Optional, List
 from api.deps import SessionDep
-from models.menu import Ingredient
+from models.ingredient import Ingredient
 from schemas.ingredient import IngredientCreate, IngredientUpdate
 from utils.exceptions import exception_400_client_error, exception_404_not_found
 
@@ -11,8 +11,8 @@ class IngredientService:
     async def get_all_ingredient(self, db: SessionDep) -> List[Ingredient]:
         return ingredient.get_ingredient_all(db=db)
     
-    async def get_all_ingredient_by_type(self, db: SessionDep, ingredient_type: str) -> List[Ingredient]:
-        return ingredient.get_ingredient_all_by_type(db=db, ingredient_type=ingredient_type)
+    async def get_all_ingredient_by_kind(self, db: SessionDep, kind: str) -> List[Ingredient]:
+        return ingredient.get_ingredient_all_by_kind(db=db, kind=kind)
 
     async def create_ingredient(self, db: SessionDep, obj_in: IngredientCreate) -> Ingredient:
         if ingredient.get_ingredient_by_name(db=db, name=obj_in.name):

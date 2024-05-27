@@ -3,21 +3,21 @@ from typing import Optional, List
 from sqlalchemy.orm import Session
 from crud.base import CRUDBase
 from utils.exceptions import exception_400_client_error
-from models.menu import Ingredient
+from models.ingredient import Ingredient
 from schemas.ingredient import IngredientCreate, IngredientUpdate
 
 class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
     def get_ingredient_all(self, db: Session) -> List[Ingredient]:
         return db.query(Ingredient).all()
     
-    def get_ingredient_all_by_type(self, db: Session, ingredient_type: str) -> List[Ingredient]:
-        return db.query(Ingredient).filter(Ingredient.ingredient_type == ingredient_type).all()
+    def get_ingredient_all_by_kind(self, db: Session, kind: str) -> List[Ingredient]:
+        return db.query(Ingredient).filter(Ingredient.kind == kind).all()
     
     def get_ingredient_by_id(self, db: Session, id: int) -> Optional[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.id == id).first()
     
     def get_ingredient_by_name(self, db: Session, name:str) -> Optional[Ingredient]:
-        return db.query(Ingredient).filter(Ingredient.ingredient_name == name).first()
+        return db.query(Ingredient).filter(Ingredient.name == name).first()
 
     def create(self, db: Session, obj_in: IngredientCreate) -> Ingredient:
         db_obj = Ingredient(**obj_in.dict())

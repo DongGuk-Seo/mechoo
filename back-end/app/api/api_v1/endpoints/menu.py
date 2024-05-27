@@ -1,17 +1,14 @@
 from typing import Optional, Union, List
 
 from fastapi import APIRouter, Request, HTTPException, Response
-from crud import menu_ingredient
 from api.deps import SessionDep
 from schemas.menu import MenuCreate, MenuUpdate, MenuOutput
 from schemas.menu_detail import MenuDetailCreate, MenuDetailOutput, MenuDetailUpdate
-from schemas.ingredient import IngredientCreate, IngredientUpdate, IngredientOutput
 from schemas.menu_recipe import MenuRecipeCreate, MenuRecipeUpdate, MenuRecipeOutput
 from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
 from schemas.menu_ingredient import MenuIngredientCreateRequest, MenuIngredientCreate, MenuIngredientUpdate, MenuIngredientOutput
 from services.menu import MenuService
 from services.menu_detail import MenuDetailService
-from services.ingredient import IngredientService
 from services.menu_recipe import MenuRecipeService
 from services.menu_image import MenuImageService
 from services.menu_ingredient import MenuIngredientService
@@ -52,24 +49,6 @@ async def update_menu_detail(db: SessionDep, obj_in: MenuDetailUpdate) -> MenuDe
 async def delete_menu_detail(db: SessionDep, id: int) -> Response:
     menu_detail_service = MenuDetailService()
     return await menu_detail_service.delete_menu_detail(db=db, id=id)
-    
-@router.post("/ingredient")
-async def create_ingredient(db: SessionDep, obj_in: IngredientCreate) -> IngredientOutput:
-    ingredient_service = IngredientService()
-    ingredient_model = await ingredient_service.create_ingredient(db=db, obj_in=obj_in)
-    return IngredientOutput(**ingredient_model.__dict__)
-
-@router.get("/ingredient")
-async def get_ingredient_all(db: SessionDep) -> List[IngredientOutput]:
-    ingredient_service = IngredientService()
-    ingredient_models = await ingredient_service.get_all_ingredient(db=db)
-    return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
-
-@router.get("/ingredient/")
-async def get_ingredient_by_ingredient_type(db: SessionDep, ingredient_type: str) -> List[IngredientOutput]:
-    ingredient_service = IngredientService()
-    ingredient_models = await ingredient_service.get_all_ingredient_by_type(db=db, ingredient_type=ingredient_type)
-    return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
 
 @router.post("/recipe")
 async def create_menu_recipe(db: SessionDep, obj_in: MenuRecipeCreate) -> MenuRecipeOutput:
@@ -84,7 +63,7 @@ async def update_menu_recipe(db: SessionDep, obj_in: MenuRecipeUpdate) -> MenuRe
     return MenuRecipeOutput(**menu_recipe_model.__dict__)
 
 @router.get("/recipe/")
-async def get_menu_recipe_by_menu_id(db: SessionDep, menu_id:int) -> MenuRecipeOutput:
+async def get_menu_recipe_by_menu_id(db: SessionDep, menu_id: int) -> MenuRecipeOutput:
     menu_recipe_service = MenuRecipeService()
     menu_recipe_model = await menu_recipe_service.get_menu_recipe_by_menu_id(db=db, menu_id=menu_id)
     return MenuRecipeOutput(**menu_recipe_model.__dict__)
@@ -95,10 +74,17 @@ async def create_menu_image(db: SessionDep, obj_in: MenuImageCreate) -> MenuImag
     menu_image_model = await menu_image_service.create_menu_image(db=db, obj_in=obj_in)
     return MenuImageOutput(**menu_image_model.__dict__)
 
-@router.post("/menu/ingredient")
+@router.post("/image/")
+async def get_menu_image_by_menu_id(db: SessionDep, menu_id: int) -> MenuImageOutput:
+    menu_image_service = MenuImageService()
+    menu_image_model = await menu_image_service.get_menu_image_by_menu_id(db=db, menu_id=menu_id)
+    return MenuImageOutput(**menu_image_model.__dict__)
+
+@router.post("/ingredient")
 async def create_menu_ingredient(db: SessionDep, obj_in: MenuIngredientCreateRequest) -> MenuIngredientOutput:
     menu_ingredient_service = MenuIngredientService()
     output = MenuIngredientOutput(menu_id=-1, ingredient_list=[])
+    # TODO : Chunk Create
     for ingredient_id in obj_in.ingredient_id_list:
         menu_ingredient_model = await menu_ingredient_service.create_menu_ingredient(db=db, obj_in=MenuIngredientCreate(menu_id=obj_in.menu_id, ingredient_id=ingredient_id))
         output.menu_id = menu_ingredient_model.menu_id

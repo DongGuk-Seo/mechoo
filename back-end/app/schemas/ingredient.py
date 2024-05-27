@@ -2,14 +2,13 @@ from typing import Optional
 from pydantic import BaseModel
 
 class IngredientBase(BaseModel):
-    id: int
+    kind: str
 
 class IngredientCreate(IngredientBase):
     name: str
-    type: str
-
+    
 class IngredientUpdate(IngredientBase):
-    type: Optional[str]
+    id: int
 
 class IngredientOutput(IngredientCreate):
     id: int

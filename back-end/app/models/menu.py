@@ -40,13 +40,6 @@ class MenuImage(Base):
     menu_id: Mapped[int] = mapped_column(Integer,  nullable=False)
     image_url: Mapped[str] = mapped_column(String, nullable=False)
 
-class Ingredient(Base):
-    __tablename__ = "ingredient"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    ingredient_name: Mapped[str] = mapped_column(String, nullable=False)
-    ingredient_type: Mapped[str] = mapped_column(String, nullable=False)
-
 class MenuIngredient(Base):
     __tablename__ = "menu_ingredient"
 
@@ -58,10 +51,10 @@ class FoodType(Base):
     __tablename__ = "food_type"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    food_type: Mapped[str] = mapped_column(String,  nullable=False)
+    type: Mapped[str] = mapped_column(String,  nullable=False)
 
 class Country(Base):
     __tablename__ = "country"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    country_name: Mapped[str] = mapped_column(String,  nullable=False)
+    name: Mapped[str] = mapped_column(String,  nullable=False)
