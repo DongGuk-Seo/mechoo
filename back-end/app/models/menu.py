@@ -15,6 +15,8 @@ class MenuDetail(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
     menu_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    menu_type_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    menu_country_id: Mapped[int] = mapped_column(Integer, nullable=False)
     sweet_level: Mapped[int] = mapped_column(Integer, nullable=False)
     sour_level: Mapped[int] = mapped_column(Integer, nullable=False)
     oil_level: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -22,8 +24,6 @@ class MenuDetail(Base):
     is_cold_food: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     include_meat: Mapped[bool] = mapped_column(Boolean, nullable=False)
     include_veget: Mapped[bool] = mapped_column(Boolean , nullable=False)
-    food_type_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    country_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
 class MenuRecipe(Base):
     __tablename__ = "menu_recipe"
@@ -47,14 +47,14 @@ class MenuIngredient(Base):
     menu_id: Mapped[int] = mapped_column(Integer,  nullable=False)
     ingredient_id: Mapped[int] = mapped_column(Integer,  nullable=False)
 
-class FoodType(Base):
-    __tablename__ = "food_type"
+class MenuType(Base):
+    __tablename__ = "menu_type"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    type: Mapped[str] = mapped_column(String,  nullable=False)
+    type_name: Mapped[str] = mapped_column(String,  nullable=False)
 
-class Country(Base):
-    __tablename__ = "country"
+class MenuCountry(Base):
+    __tablename__ = "menu_country"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    name: Mapped[str] = mapped_column(String,  nullable=False)
+    country_name: Mapped[str] = mapped_column(String,  nullable=False)

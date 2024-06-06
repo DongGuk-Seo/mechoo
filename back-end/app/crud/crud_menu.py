@@ -12,7 +12,7 @@ class CRUDMenu(CRUDBase[Menu, MenuCreate, MenuUpdate]):
     def get_menu_by_name(self, db: Session, name: str) -> Optional[Menu]:
         return db.query(Menu).filter(Menu.name == name).first()
     
-    def get_menu_by_id(self, db: Session, id: int) -> Optional[Menu]:
+    def get_by_id(self, db: Session, id: int) -> Optional[Menu]:
         return db.query(Menu).filter(Menu.id == id).first()
 
     def create(self, db: Session, obj_in: MenuCreate) -> Menu:

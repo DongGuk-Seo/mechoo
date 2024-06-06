@@ -7,16 +7,16 @@ from models.ingredient import Ingredient
 from schemas.ingredient import IngredientCreate, IngredientUpdate
 
 class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):
-    def get_ingredient_all(self, db: Session) -> List[Ingredient]:
+    def get_all(self, db: Session) -> List[Ingredient]:
         return db.query(Ingredient).all()
     
-    def get_ingredient_all_by_kind(self, db: Session, kind: str) -> List[Ingredient]:
+    def get_all_by_kind(self, db: Session, kind: str) -> List[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.kind == kind).all()
     
-    def get_ingredient_by_id(self, db: Session, id: int) -> Optional[Ingredient]:
+    def get_by_id(self, db: Session, id: int) -> Optional[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.id == id).first()
     
-    def get_ingredient_by_name(self, db: Session, name:str) -> Optional[Ingredient]:
+    def get_by_name(self, db: Session, name:str) -> Optional[Ingredient]:
         return db.query(Ingredient).filter(Ingredient.name == name).first()
 
     def create(self, db: Session, obj_in: IngredientCreate) -> Ingredient:

@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 class MenuDetailBase(BaseModel):
     menu_id: int
-    food_type_id: int
-    country_id: int
+    menu_type_id: int
+    menu_country_id: int
 
 class MenuDetailCreate(MenuDetailBase):
     sweet_level: int

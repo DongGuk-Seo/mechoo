@@ -7,7 +7,7 @@ from models.menu import MenuDetail
 from schemas.menu_detail import MenuDetailBase, MenuDetailCreate, MenuDetailUpdate
 
 class CRUDMenuDetail(CRUDBase[MenuDetail, MenuDetailCreate, MenuDetailUpdate]):
-    def get_menu_detail_by_menu_id(self, db: Session, menu_id: int) -> Optional[MenuDetail]:
+    def get_by_menu_id(self, db: Session, menu_id: int) -> Optional[MenuDetail]:
         return db.query(MenuDetail).filter(MenuDetail.menu_id == menu_id).first()
 
     def create(self, db: Session, obj_in: MenuDetailCreate) -> MenuDetail:

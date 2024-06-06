@@ -7,7 +7,7 @@ from models.menu import MenuImage
 from schemas.menu_image import MenuImageCreate, MenuImageUpdate, MenuImageOutput
 
 class CRUDMenuImage(CRUDBase[MenuImage, MenuImageCreate, MenuImageUpdate]):
-    def get_menu_image_by_menu_id(self, db: Session, menu_id: int) -> Optional[MenuImage]:
+    def get_by_menu_id(self, db: Session, menu_id: int) -> Optional[MenuImage]:
         return db.query(MenuImage).filter(MenuImage.menu_id == menu_id).first()
 
     def create(self, db: Session, obj_in: MenuImageCreate) -> MenuImage:

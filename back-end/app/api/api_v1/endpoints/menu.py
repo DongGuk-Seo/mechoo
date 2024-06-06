@@ -75,9 +75,9 @@ async def create_menu_image(db: SessionDep, obj_in: MenuImageCreate) -> MenuImag
     return MenuImageOutput(**menu_image_model.__dict__)
 
 @router.post("/image/")
-async def get_menu_image_by_menu_id(db: SessionDep, menu_id: int) -> MenuImageOutput:
+async def get_by_menu_id(db: SessionDep, menu_id: int) -> MenuImageOutput:
     menu_image_service = MenuImageService()
-    menu_image_model = await menu_image_service.get_menu_image_by_menu_id(db=db, menu_id=menu_id)
+    menu_image_model = await menu_image_service.get_by_menu_id(db=db, menu_id=menu_id)
     return MenuImageOutput(**menu_image_model.__dict__)
 
 @router.post("/ingredient")

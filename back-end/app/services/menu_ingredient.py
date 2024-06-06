@@ -1,17 +1,24 @@
-from crud import menu, ingredient, menu_ingredient
+from crud import menu_ingredient
 from models.menu import MenuIngredient
 from fastapi import Response
 from api.deps import SessionDep
 from schemas.menu_ingredient import MenuIngredientCreate
+from services.menu import MenuService
+from services.ingredient import IngredientService
 from utils.exceptions import exception_400_client_error, exception_404_not_found
 
 class MenuIngredientService:
-        
+    def __init__(self) -> None:
+        self.menu_service = MenuService()
+        self.ingredient_service = IngredientService()
+        pass
+
     async def create_menu_ingredient(self, db: SessionDep, obj_in: MenuIngredientCreate) -> MenuIngredient:
-        if not menu.get_menu_by_id(db=db, id=obj_in.menu_id):
-            raise exception_404_not_found("존재하지 않는 메뉴입니다.")
-        if not ingredient.get_ingredient_by_id(db=db, id=obj_in.ingredient_id):
-            raise exception_400_client_error("존재하지 않는 재료입니다.")
+
+        # Valid
+        await self.menu_service.get_by_id(db=db, id=obj_in.menu_id)
+        await self.ingredient_service.get_by_id(db=db, id=obj_in.ingredient_id)
+
         menu_ingredient_model = menu_ingredient.create(db=db, obj_in=obj_in)
         return menu_ingredient_model
     

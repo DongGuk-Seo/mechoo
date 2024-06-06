@@ -20,7 +20,7 @@ async def get_ingredient_all(db: SessionDep) -> List[IngredientOutput]:
     return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
 
 @router.get("/")
-async def get_ingredient_by_ingredient_type(db: SessionDep, kind: str) -> List[IngredientOutput]:
+async def get_ingredient_by_ingredient_kind(db: SessionDep, kind: str) -> List[IngredientOutput]:
     ingredient_service = IngredientService()
     ingredient_models = await ingredient_service.get_all_ingredient_by_kind(db=db, kind=kind)
     return [IngredientOutput(**ingredient_model.__dict__) for ingredient_model in ingredient_models]
