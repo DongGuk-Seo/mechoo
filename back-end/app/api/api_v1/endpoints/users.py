@@ -12,7 +12,7 @@ from schemas.token import TokenOutput, TokenInput
 
 router = APIRouter()
 
-@router.post("/signup")
+@router.post("/sign-up")
 def create_user(session: SessionDep, user_in: UserCreate) -> UserOutput:
     user = crud.user.valid_exist_user(db=session, email=user_in.email, username=user_in.username)
     user = crud.user.create(db=session, obj_in=user_in)
@@ -23,7 +23,7 @@ def create_user(session: SessionDep, user_in: UserCreate) -> UserOutput:
         )
     return res
 
-@router.post("/signin")
+@router.post("/sign-in")
 def signin(request: Request, session: SessionDep, user_in: UserSignin) -> Optional[TokenOutput]:
     user = crud.user.authenticate(db=session, email=user_in.email, password=user_in.password)
     if not request.client:
