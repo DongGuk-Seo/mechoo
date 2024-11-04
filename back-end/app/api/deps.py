@@ -1,7 +1,6 @@
 from typing import Annotated, Generator
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends
 from sqlmodel import Session
 from db.engine import engine
 

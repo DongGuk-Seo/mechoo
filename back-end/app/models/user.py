@@ -22,7 +22,7 @@ class UserDetail(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
     profile_image: Mapped[str] = mapped_column(String, nullable=True)
     profile_intro: Mapped[str] = mapped_column(String, nullable=True)
-    phone_number: Mapped[str] = mapped_column(String(13), nullable=True)
+    phone_number: Mapped[str] = mapped_column(String(11), nullable=True)
     gender: Mapped[bool] = mapped_column(Boolean, nullable=True)
     birth: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     user_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
