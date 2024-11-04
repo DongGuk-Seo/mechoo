@@ -22,13 +22,13 @@ def create_token(subject: Union[str, Any]) -> TokenOutput:
     access_to_encode = {"exp": access_expire, "sub": str(subject)}
     refresh_to_encode = {"exp": refresh_expire, "sub": str(subject)}
     tokens = TokenOutput(
-        access_token=jwt.encode(access_to_encode, settings.SECRET_KEY, algorithm=ALGORITHM),
-        refresh_token=jwt.encode(refresh_to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+        access_token=jwt.encode(access_to_encode, settings.JWT_SECRET_KEY, algorithm=ALGORITHM),
+        refresh_token=jwt.encode(refresh_to_encode, settings.JWT_SECRET_KEY, algorithm=ALGORITHM)
     )
     return tokens
 
 def valid_token(token: str) -> Optional[bool]:
-    decoded_token = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=ALGORITHM,)
+    decoded_token = jwt.decode(token=token, key=settings.JWT_SECRET_KEY, algorithms=ALGORITHM,)
     if is_expired(decoded_token["exp"]):
         return True
     return False

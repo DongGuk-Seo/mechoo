@@ -3,3 +3,5 @@ __pycache__
 db-volume
 local-db.yml
 secrets.txt
+db.yml
+.env

@@ -20,6 +20,3 @@ class UserSignin(UserBase):
 class UserOutput(UserBase):
     username: str
     id: int
-
-    class Config:
-        orm_mode = True
